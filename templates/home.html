@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fingerprint Attendance System</title>
+    <style>
+        /* ========== BASIC STYLING ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        /* ========== USER INFO ========== */
+        .user-info {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .user-info strong {
+            color: #333;
+        }
+        
+        .logout-btn {
+            float: right;
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        /* ========== NAVIGATION MENU ========== */
+        .menu {
+            list-style: none;
+        }
+        
+        .menu-section {
+            margin-bottom: 30px;
+        }
+        
+        .menu-section h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .menu li {
+            margin-bottom: 10px;
+        }
+        
+        .menu a {
+            display: block;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+        
+        .menu a:hover {
+            background: #667eea;
+            color: white;
+            border-left-color: #764ba2;
+            transform: translateX(5px);
+        }
+        
+        .menu .primary-action {
+            background: #28a745;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .menu .primary-action:hover {
+            background: #218838;
+            border-left-color: #1e7e34;
+        }
+        
+        .menu .admin-link {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        
+        .menu .admin-link:hover {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        /* ========== MESSAGES ========== */
+        .messages {
+            margin-bottom: 20px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .alert-success { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+        .alert-error { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+        .alert-warning { background: #fff3cd; color: #856404; border-left: 4px solid #ffc107; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border-left: 4px solid #17a2b8; }
+        
+        /* ========== WELCOME BOX ========== */
+        .welcome-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .welcome-box h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-box p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Main Header -->
+        <h1>🔐 Fingerprint Attendance System</h1>
+        <p class="subtitle">Automated attendance tracking using R307 fingerprint sensor</p>
+        
+        <!-- User Information (if logged in) -->
+        {% if user.is_authenticated %}
+        <div class="user-info">
+            <a href="/logout/" class="logout-btn">Logout</a>
+            <strong>👤 Logged in as:</strong> {{ user.username }}
+            {% if user.is_staff %}<span style="color: #ffc107;">⭐ (Admin)</span>{% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Display Django Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Welcome Box (if not logged in) -->
+        {% if not user.is_authenticated %}
+        <div class="welcome-box">
+            <h2>Welcome!</h2>
+            <p>Please register or login to get started</p>
+        </div>
+        {% endif %}
+        
+        <!-- Navigation Menu -->
+        <ul class="menu">
+            <!-- FOR STUDENTS -->
+            {% if not user.is_authenticated %}
+            <div class="menu-section">
+                <h2>�‍🎓 For Students</h2>
+                <li><a href="/register/" style="background: #667eea; color: white; font-weight: bold;">
+                    📝 Register New Student Account
+                </a></li>
+                <li><a href="/login/">🔓 Login to Your Account</a></li>
+                <li><a href="/fingerprint/scan/" class="primary-action">
+                    👆 Scan Fingerprint (Mark Attendance)
+                </a></li>
+            </div>
+            {% else %}
+            <div class="menu-section">
+                <h2>�‍🎓 Student Actions</h2>
+                <li><a href="/fingerprint/scan/" class="primary-action">
+                    ✅ Scan Fingerprint (Mark Attendance)
+                </a></li>
+                <li><a href="/profile/">👤 View My Profile & Attendance History</a></li>
+                <li><a href="/fingerprint/enroll-own/">🔐 Enroll/Update My Fingerprint</a></li>
+            </div>
+            {% endif %}
+            
+            <!-- FOR INSTRUCTORS -->
+            {% if user.is_authenticated %}
+                {% if user.is_staff or user.userprofile.role == 'instructor' %}
+                <div class="menu-section">
+                    <h2>�‍🏫 Instructor Panel</h2>
+                    <li><a href="/attendance/dashboard/">📊 View Attendance Dashboard</a></li>
+                    <li><a href="/fingerprint/enroll/">➕ Enroll Student Fingerprints</a></li>
+                    <li><a href="/admin/" class="admin-link">⚙️ Admin Panel (Manage System)</a></li>
+                </div>
+                {% endif %}
+            {% endif %}
+            
+            <!-- SYSTEM INFO -->
+            <div class="menu-section">
+                <h2>ℹ️ Information</h2>
+                <li><a href="#" onclick="alert('This system uses R307 fingerprint sensor for secure attendance tracking. Simply scan your finger to mark attendance!'); return false;">
+                    ❓ How It Works
+                </a></li>
+                <li><a href="#" onclick="alert('Contact your instructor or system administrator for support.'); return false;">
+                    📞 Get Help
+                </a></li>
+            </div>
+        </ul>
+    </div>
+</body>
+</html>
+
+ 
