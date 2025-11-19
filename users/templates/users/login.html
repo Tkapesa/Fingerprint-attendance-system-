@@ -126,12 +126,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Login</h1>
+        <h1>Login</h1>
         <p class="subtitle">Access your student account</p>
         
         <!-- Note about fingerprint scanning -->
         <div class="note">
-            <strong>💡 Note:</strong> For attendance marking, you don't need to login!
+            <strong>Note:</strong> For attendance marking, you don't need to login!
             Just go to <a href="/fingerprint/scan/">Scan Fingerprint</a> page and scan your finger.
         </div>
         
@@ -151,7 +151,7 @@
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="student_id">🆔 Student ID</label>
+                <label for="student_id">Student ID</label>
                 <input 
                     type="text" 
                     id="student_id" 
@@ -164,7 +164,7 @@
             </div>
             
             <div class="form-group">
-                <label for="password">🔒 Password</label>
+                <label for="password">Password</label>
                 <input 
                     type="password" 
                     id="password" 
@@ -174,7 +174,7 @@
                 >
             </div>
             
-            <button type="submit">🔓 Login</button>
+            <button type="submit">Login</button>
         </form>
         
         <a href="/register/" class="register-link">Don't have an account? Register here</a>

@@ -9,7 +9,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
             display: flex;
@@ -71,7 +71,7 @@
         button {
             width: 100%;
             padding: 25px;
-            background: #11998e;
+            background: #28a745;
             color: white;
             border: none;
             border-radius: 12px;
@@ -80,14 +80,14 @@
             cursor: pointer;
             transition: all 0.3s;
             margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
         }
         
         button:hover {
-            background: #38ef7d;
-            color: #000;
+            background: #218838;
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.4);
+            box-shadow: 0 6px 20px rgba(33, 136, 56, 0.4);
         }
         
         button:active {
@@ -97,7 +97,7 @@
         .home-link {
             display: inline-block;
             margin-top: 10px;
-            color: #11998e;
+            color: #667eea;
             text-decoration: none;
             font-weight: 600;
         }
@@ -163,15 +163,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>✅ Mark Attendance</h1>
+        <h1>Mark Attendance</h1>
         <p class="subtitle">Scan your fingerprint to mark attendance</p>
-        
-        <!-- Fingerprint Icon -->
-        <div class="fingerprint-icon">👆</div>
         
         <!-- Instructions -->
         <div class="instruction">
-            <strong>📝 Quick Instructions:</strong>
+            <strong>Quick Instructions:</strong>
             <ol>
                 <li>Make sure your finger is clean and dry</li>
                 <li>Click the "Scan Fingerprint Now" button below</li>
@@ -195,14 +192,14 @@
         <!-- Scan Form -->
         <form method="post">
             {% csrf_token %}
-            <button type="submit">🔍 Scan Fingerprint Now</button>
+            <button type="submit">Scan Fingerprint Now</button>
         </form>
         
         <a href="/" class="home-link">← Back to Home</a>
         
         <!-- Tips Section -->
         <div class="tips">
-            <h3>💡 Tips for Best Results:</h3>
+            <h3>Tips for Best Results:</h3>
             <ul>
                 <li>Use the same finger you enrolled with</li>
                 <li>Clean sensor if it's dusty</li>

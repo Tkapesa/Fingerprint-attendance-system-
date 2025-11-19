@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fingerprint Attendance System</title>
+    <title>FINGERPRINT ATTENDANCE SYSTEM</title>
     <style>
         /* ========== BASIC STYLING ========== */
         * {
@@ -130,6 +130,17 @@
             color: #000;
         }
         
+        .menu .register-btn {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .menu .register-btn:hover {
+            background: #5568d3;
+            border-left-color: #764ba2;
+        }
+        
         /* ========== MESSAGES ========== */
         .messages {
             margin-bottom: 20px;
@@ -170,15 +181,15 @@
 <body>
     <div class="container">
         <!-- Main Header -->
-        <h1>🔐 Fingerprint Attendance System</h1>
+        <h1>Fingerprint Attendance System</h1>
         <p class="subtitle">Automated attendance tracking using R307 fingerprint sensor</p>
         
         <!-- User Information (if logged in) -->
         {% if user.is_authenticated %}
         <div class="user-info">
             <a href="/logout/" class="logout-btn">Logout</a>
-            <strong>👤 Logged in as:</strong> {{ user.username }}
-            {% if user.is_staff %}<span style="color: #ffc107;">⭐ (Admin)</span>{% endif %}
+            <strong>Logged in as:</strong> {{ user.username }}
+            {% if user.is_staff %}<span style="color: #ffc107;">(Admin)</span>{% endif %}
         </div>
         {% endif %}
         
@@ -206,23 +217,23 @@
             <!-- FOR STUDENTS -->
             {% if not user.is_authenticated %}
             <div class="menu-section">
-                <h2>�‍🎓 For Students</h2>
-                <li><a href="/register/" style="background: #667eea; color: white; font-weight: bold;">
-                    📝 Register New Student Account
+                <h2>For Students</h2>
+                <li><a href="/register/" class="register-btn">
+                    Register New Student Account
                 </a></li>
-                <li><a href="/login/">🔓 Login to Your Account</a></li>
+                <li><a href="/login/">Login to Your Account</a></li>
                 <li><a href="/fingerprint/scan/" class="primary-action">
-                    👆 Scan Fingerprint (Mark Attendance)
+                    Scan Fingerprint (Mark Attendance)
                 </a></li>
             </div>
             {% else %}
             <div class="menu-section">
-                <h2>�‍🎓 Student Actions</h2>
+                <h2>Student Actions</h2>
                 <li><a href="/fingerprint/scan/" class="primary-action">
-                    ✅ Scan Fingerprint (Mark Attendance)
+                    Scan Fingerprint (Mark Attendance)
                 </a></li>
-                <li><a href="/profile/">👤 View My Profile & Attendance History</a></li>
-                <li><a href="/fingerprint/enroll-own/">🔐 Enroll/Update My Fingerprint</a></li>
+                <li><a href="/profile/">View My Profile & Attendance History</a></li>
+                <li><a href="/fingerprint/enroll-own/">Enroll/Update My Fingerprint</a></li>
             </div>
             {% endif %}
             
@@ -230,22 +241,22 @@
             {% if user.is_authenticated %}
                 {% if user.is_staff or user.userprofile.role == 'instructor' %}
                 <div class="menu-section">
-                    <h2>�‍🏫 Instructor Panel</h2>
-                    <li><a href="/attendance/dashboard/">📊 View Attendance Dashboard</a></li>
-                    <li><a href="/fingerprint/enroll/">➕ Enroll Student Fingerprints</a></li>
-                    <li><a href="/admin/" class="admin-link">⚙️ Admin Panel (Manage System)</a></li>
+                    <h2>Instructor Panel</h2>
+                    <li><a href="/attendance/dashboard/">View Attendance Dashboard</a></li>
+                    <li><a href="/fingerprint/enroll/">Enroll Student Fingerprints</a></li>
+                    <li><a href="/admin/" class="admin-link">Admin Panel (Manage System)</a></li>
                 </div>
                 {% endif %}
             {% endif %}
             
             <!-- SYSTEM INFO -->
             <div class="menu-section">
-                <h2>ℹ️ Information</h2>
+                <h2>Information</h2>
                 <li><a href="#" onclick="alert('This system uses R307 fingerprint sensor for secure attendance tracking. Simply scan your finger to mark attendance!'); return false;">
-                    ❓ How It Works
+                    How It Works
                 </a></li>
                 <li><a href="#" onclick="alert('Contact your instructor or system administrator for support.'); return false;">
-                    📞 Get Help
+                    Get Help
                 </a></li>
             </div>
         </ul>

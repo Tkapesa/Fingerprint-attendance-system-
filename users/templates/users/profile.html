@@ -160,7 +160,7 @@
         
         <!-- Profile Card -->
         <div class="profile-card">
-            <h1>👤 My Profile</h1>
+            <h1>My Profile</h1>
             
             <div class="profile-grid">
                 <div class="profile-item">
@@ -186,21 +186,21 @@
             
             {% if profile.fingerprint_enrolled %}
             <div class="fingerprint-status fingerprint-enrolled">
-                <strong>✓ Fingerprint Enrolled</strong> - You can mark attendance by scanning your fingerprint.
+                <strong>Fingerprint Enrolled</strong> - You can mark attendance by scanning your fingerprint.
             </div>
             {% else %}
             <div class="fingerprint-status fingerprint-not-enrolled">
-                <strong>✗ Fingerprint Not Enrolled</strong> - Please enroll your fingerprint to mark attendance automatically.
+                <strong>Fingerprint Not Enrolled</strong> - Please enroll your fingerprint to mark attendance automatically.
             </div>
             {% endif %}
             
-            <a href="/fingerprint/enroll-own/" class="btn">🔐 Update Fingerprint</a>
-            <a href="/fingerprint/scan/" class="btn">✅ Mark Attendance Now</a>
+            <a href="/fingerprint/enroll-own/" class="btn">Update Fingerprint</a>
+            <a href="/fingerprint/scan/" class="btn">Mark Attendance Now</a>
         </div>
         
         <!-- Attendance History -->
         <div class="attendance-history">
-            <h2>📊 My Attendance History</h2>
+            <h2>My Attendance History</h2>
             
             {% if attendance_logs %}
             <table>
