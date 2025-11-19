@@ -174,12 +174,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>➕ Enroll Student Fingerprint</h1>
+        <h1>Enroll Student Fingerprint</h1>
         <p class="subtitle">Instructor/Admin Panel - Enroll fingerprints for students</p>
         
         <!-- Instructions -->
         <div class="instruction">
-            <strong>📝 Instructions:</strong>
+            <strong>Instructions:</strong>
             <ol>
                 <li>Enter or select student ID from the list below</li>
                 <li>Click "Start Enrollment"</li>
@@ -205,7 +205,7 @@
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="student_id">👤 Student ID:</label>
+                <label for="student_id">Student ID:</label>
                 <input 
                     type="text" 
                     id="student_id" 
@@ -223,7 +223,7 @@
                 <small>Type student ID or select from list below</small>
             </div>
             
-            <button type="submit">🔐 Start Fingerprint Enrollment</button>
+            <button type="submit">Start Fingerprint Enrollment</button>
         </form>
         
         <!-- Students List -->
@@ -248,9 +248,9 @@
                         <td>{{ student.email }}</td>
                         <td>
                             {% if student.fingerprint_enrolled %}
-                            <span class="enrolled-badge enrolled-yes">✓ Enrolled</span>
+                            <span class="enrolled-badge enrolled-yes">Enrolled</span>
                             {% else %}
-                            <span class="enrolled-badge enrolled-no">✗ Not Enrolled</span>
+                            <span class="enrolled-badge enrolled-no">Not Enrolled</span>
                             {% endif %}
                         </td>
                     </tr>

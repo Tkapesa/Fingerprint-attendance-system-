@@ -134,12 +134,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎓 Student Registration</h1>
+        <h1>Student Registration</h1>
         <p class="subtitle">Create your account to use fingerprint attendance</p>
         
         <!-- Instructions -->
         <div class="instruction">
-            <strong>📝 Registration Steps:</strong>
+            <strong>Registration Steps:</strong>
             <ol>
                 <li>Fill in all your details below</li>
                 <li>Create a strong password</li>
@@ -164,7 +164,7 @@
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="full_name">👤 Full Name <span class="required">*</span></label>
+                <label for="full_name">Full Name <span class="required">*</span></label>
                 <input 
                     type="text" 
                     id="full_name" 
@@ -177,7 +177,7 @@
             </div>
             
             <div class="form-group">
-                <label for="email">📧 Email Address <span class="required">*</span></label>
+                <label for="email">Email Address <span class="required">*</span></label>
                 <input 
                     type="email" 
                     id="email" 
@@ -189,7 +189,7 @@
             </div>
             
             <div class="form-group">
-                <label for="student_id">🆔 Student ID <span class="required">*</span></label>
+                <label for="student_id">Student ID <span class="required">*</span></label>
                 <input 
                     type="text" 
                     id="student_id" 
@@ -201,7 +201,7 @@
             </div>
             
             <div class="form-group">
-                <label for="course_code">📚 Course Code <span class="required">*</span></label>
+                <label for="course_code">Course Code <span class="required">*</span></label>
                 <select id="course_code" name="course_code" required>
                     <option value="">-- Select your course --</option>
                     {% for course in courses %}
@@ -215,13 +215,13 @@
                 <small>Select the course you're enrolled in</small>
                 {% if not courses %}
                 <div class="alert alert-error" style="margin-top: 10px;">
-                    ⚠️ No courses are currently available. Please ask your administrator to create courses first in the <a href="/admin/" style="color: #721c24; font-weight: bold;">Admin Panel</a>.
+                    No courses are currently available. Please ask your administrator to create courses first in the <a href="/admin/" style="color: #721c24; font-weight: bold;">Admin Panel</a>.
                 </div>
                 {% endif %}
             </div>
             
             <div class="form-group">
-                <label for="password">🔒 Password <span class="required">*</span></label>
+                <label for="password">Password <span class="required">*</span></label>
                 <input 
                     type="password" 
                     id="password" 
@@ -234,7 +234,7 @@
             </div>
             
             <div class="form-group">
-                <label for="confirm_password">🔒 Confirm Password <span class="required">*</span></label>
+                <label for="confirm_password">Confirm Password <span class="required">*</span></label>
                 <input 
                     type="password" 
                     id="confirm_password" 
@@ -245,7 +245,7 @@
                 >
             </div>
             
-            <button type="submit">✅ Register & Continue to Fingerprint Enrollment</button>
+            <button type="submit">Register & Continue to Fingerprint Enrollment</button>
         </form>
         
         <a href="/login/" class="login-link">Already have an account? Login here</a>
