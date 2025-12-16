@@ -89,12 +89,12 @@ WSGI_APPLICATION = 'fingerprint_attendance.wsgi.application'
 
 
 # ========== DATABASE CONFIGURATION ==========
-# Using SQLite for simplicity - easy to deploy and maintain
-# For production with many users, consider PostgreSQL or MySQL
+# Using Firebase Realtime Database for app data
+# SQLite database for Django's internal tables (sessions, admin, migrations)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',  # Database file location
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -143,4 +143,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/admin/login/'  # Use Django admin login page
+
+
+# ========== FIREBASE CONFIGURATION ==========
+# Firebase Firestore Database Configuration
+# Get these credentials from Firebase Console: https://console.firebase.google.com
+# 1. Create a project
+# 2. Go to Project Settings > Service Accounts
+# 3. Generate new private key (JSON file)
+# 4. Place the JSON file in the project root and update FIREBASE_CREDENTIALS_PATH
+
+import os
+
+# Path to Firebase service account credentials JSON file
+FIREBASE_CREDENTIALS_PATH = os.path.join(BASE_DIR, 'firebase-credentials.json')
+
+# Firebase Project ID
+FIREBASE_PROJECT_ID = 'attendance-system-31683'
+
+# Firebase Web API Key (for ESP32 and Frontend)
+# Get from: Firebase Console > Project Settings > General > Web API Key
+FIREBASE_API_KEY = 'AIzaSyCJoIAWWbPXB5EHEAcXj_epzRCElh1BCgU'
+
+# Firebase configuration dictionary (for web apps, ESP32, and Frontend onSnapshot)
+FIREBASE_CONFIG = {
+    'apiKey': 'AIzaSyCJoIAWWbPXB5EHEAcXj_epzRCElh1BCgU',
+    'authDomain': 'attendance-system-31683.firebaseapp.com',
+    'projectId': 'attendance-system-31683',
+    'storageBucket': 'attendance-system-31683.firebasestorage.app',
+    'messagingSenderId': '859845763144',
+    'appId': '1:859845763144:web:cfe51da2090756dbb4b87d',
+    'measurementId': 'G-3ML5456HKL'
+}
+
+# Firestore Database Name (default is '(default)')
+FIRESTORE_DATABASE = '(default)'
 

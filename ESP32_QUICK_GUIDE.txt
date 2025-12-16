@@ -1,0 +1,211 @@
+╔══════════════════════════════════════════════════════════════╗
+║         ESP32 QUICK SETUP GUIDE - ATTENDANCE SYSTEM          ║
+╚══════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────┐
+│ HARDWARE WIRING (R307 to ESP32)                              │
+└──────────────────────────────────────────────────────────────┘
+
+R307 Sensor          →    ESP32
+─────────────────────────────────────────
+VCC (Red Wire)       →    3.3V or 5V
+GND (Black Wire)     →    GND
+TX (White Wire)      →    GPIO 16 (RX2)
+RX (Green Wire)      →    GPIO 17 (TX2)
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ ARDUINO IDE SETUP                                            │
+└──────────────────────────────────────────────────────────────┘
+
+1. Install ESP32 Board Support
+   ├─ File → Preferences
+   ├─ Additional Board Manager URLs:
+   │  https://dl.espressif.com/dl/package_esp32_index.json
+   ├─ Tools → Board → Boards Manager
+   └─ Search "ESP32" → Install
+
+2. Install Libraries
+   ├─ Sketch → Include Library → Manage Libraries
+   ├─ Install: "Firebase ESP32 Client" by Mobizt
+   └─ Install: "Adafruit Fingerprint Sensor Library"
+
+3. Select Board
+   ├─ Tools → Board → "ESP32 Dev Module"
+   ├─ Tools → Port → (Your ESP32 COM port)
+   └─ Tools → Upload Speed → 115200
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ CODE CONFIGURATION (Edit these in .ino file)                 │
+└──────────────────────────────────────────────────────────────┘
+
+// WiFi Settings
+#define WIFI_SSID "YourWiFiName"
+#define WIFI_PASSWORD "YourWiFiPassword"
+
+// Firebase Settings (from Firebase Console)
+#define FIREBASE_HOST "attendance-system-xxxxx.firebaseio.com"
+#define FIREBASE_AUTH "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ UPLOAD TO ESP32                                              │
+└──────────────────────────────────────────────────────────────┘
+
+1. Connect ESP32 to computer via USB
+2. Open: esp32_fingerprint/esp32_attendance_firebase.ino
+3. Update WiFi and Firebase credentials
+4. Click Upload button (→)
+5. Wait for "Done uploading"
+6. Open Serial Monitor (Tools → Serial Monitor)
+7. Set baud rate to 115200
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ SERIAL MONITOR OUTPUT (What you should see)                  │
+└──────────────────────────────────────────────────────────────┘
+
+========================================
+ESP32 FINGERPRINT ATTENDANCE SYSTEM
+========================================
+
+1. Initializing R307 Sensor...
+   ✅ R307 Sensor Found!
+   Templates stored: 0
+
+2. Connecting to WiFi...
+   ✅ WiFi Connected!
+   IP Address: 192.168.1.100
+
+3. Synchronizing time...
+   ✅ Time synchronized!
+
+4. Connecting to Firebase...
+   ✅ Firebase Connected!
+
+========================================
+✅ SYSTEM READY!
+Place finger on sensor to mark attendance
+========================================
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ ENROLLING FINGERPRINTS                                       │
+└──────────────────────────────────────────────────────────────┘
+
+Option A: Use Adafruit Example
+1. File → Examples → Adafruit Fingerprint → enroll
+2. Upload to ESP32
+3. Open Serial Monitor
+4. Follow prompts to enroll fingerprint
+5. Remember the ID (1, 2, 3, etc.)
+
+Option B: Use R307 Software
+1. Download R307 enrollment software for Windows
+2. Connect sensor directly to PC via USB-Serial adapter
+3. Enroll fingerprints using GUI
+4. Reconnect to ESP32
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ FIREBASE MAPPING (Required!)                                 │
+└──────────────────────────────────────────────────────────────┘
+
+After enrolling fingerprints, map them to students:
+
+Go to Firebase Console → Realtime Database
+
+/fingerprint_mapping/
+  ├─ 1: "ST001"      ← Fingerprint ID 1 = Student ST001
+  ├─ 2: "ST002"      ← Fingerprint ID 2 = Student ST002
+  └─ 3: "ST003"      ← Fingerprint ID 3 = Student ST003
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ TESTING ATTENDANCE                                           │
+└──────────────────────────────────────────────────────────────┘
+
+1. Ensure ESP32 shows "SYSTEM READY"
+2. Place enrolled finger on sensor
+3. Watch Serial Monitor for:
+
+   👆 Finger detected!
+   ✅ Match found!
+   Fingerprint ID: 1 | Confidence: 150
+   
+   📡 Marking attendance in Firebase...
+   1. Looking up student ID...
+      Student ID: ST001
+   2. Getting student details...
+      Name: John Doe
+      Course: CS101
+   3. Checking if already marked...
+   4. Creating attendance record...
+      ✅ Attendance marked successfully!
+   
+   ╔══════════════════════════════════════╗
+   ║ ✅ Welcome, John Doe                 ║
+   ║ 📚 Course: CS101                     ║
+   ║ 🕐 Time: 09:15:30                    ║
+   ╚══════════════════════════════════════╝
+
+4. Verify in Firebase Console:
+   /attendance/2025-12-16/CS101/ST001/
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ TROUBLESHOOTING                                              │
+└──────────────────────────────────────────────────────────────┘
+
+❌ "R307 Sensor NOT Found"
+   → Check wiring (TX/RX might be swapped)
+   → Check power (sensor LED should be on)
+   → Try different GPIO pins
+
+❌ "WiFi Connection Failed"
+   → Check SSID and password
+   → Move closer to router
+   → Check 2.4GHz WiFi (ESP32 doesn't support 5GHz)
+
+❌ "Firebase Connection Failed"
+   → Check FIREBASE_HOST (no https://, no trailing /)
+   → Check FIREBASE_AUTH key is correct
+   → Verify internet connection
+
+❌ "Fingerprint not mapped to any student"
+   → Add mapping in Firebase:
+     /fingerprint_mapping/1 = "ST001"
+
+❌ "Student not found in database"
+   → Add student in Firebase:
+     /students/ST001/ { full_name, email, course_code }
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ POWER OPTIONS                                                │
+└──────────────────────────────────────────────────────────────┘
+
+USB Power (Development):
+├─ Connect ESP32 to computer via USB
+└─ Also provides Serial Monitor output
+
+Battery/Adapter (Production):
+├─ Use 5V power adapter via VIN pin
+├─ Or use LiPo battery (3.7V)
+└─ Ensure R307 gets sufficient current (150mA)
+
+
+┌──────────────────────────────────────────────────────────────┐
+│ HELPFUL RESOURCES                                            │
+└──────────────────────────────────────────────────────────────┘
+
+ESP32 Pinout: https://randomnerdtutorials.com/esp32-pinout/
+Firebase Console: https://console.firebase.google.com
+Arduino IDE Download: https://www.arduino.cc/en/software
+R307 Datasheet: Search "R307 fingerprint sensor datasheet"
+
+
+╔══════════════════════════════════════════════════════════════╗
+║  Questions? Check FIREBASE_SETUP_GUIDE.txt for more details  ║
+╚══════════════════════════════════════════════════════════════╝

@@ -18,7 +18,16 @@ openpyxl>=3.1.5
 
 # PySerial - Serial Port Communication
 # Required for R307 fingerprint sensor communication via USB
+# NOTE: Not needed with ESP32 (sensor connects to ESP32, not PC)
 pyserial>=3.5
+
+# Firebase Admin SDK - Firebase Integration
+# Required for connecting Django to Firebase Realtime Database
+firebase-admin>=6.0.0
+
+# Requests - HTTP Library
+# Used for making HTTP requests to Firebase REST API
+requests>=2.31.0
 
 # ============================================================
 # INSTALLATION INSTRUCTIONS
