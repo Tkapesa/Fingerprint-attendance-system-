@@ -1,375 +1,646 @@
 # 🔐 Fingerprint Attendance System
 
-A Django-based attendance management system using R307 optical fingerprint sensor for automated, secure attendance tracking.
+A modern attendance management system using **Django API** + **Firebase Firestore** + **ESP32** + **R307 Fingerprint Sensor** with real-time updates.
+
+**Backend Status:** 🟢 Running | **Frontend Status:** 🎨 Ready for Development
 
 ---
 
 ## 📋 Table of Contents
 
-- [Features](#features)
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Hardware Setup](#hardware-setup)
-- [Usage](#usage)
+- [System Overview](#system-overview)
+- [Quick Start](#quick-start)
+- [Backend Setup](#backend-setup)
+- [Frontend Development](#frontend-development)
+- [Firebase Configuration](#firebase-configuration)
+- [ESP32 Hardware](#esp32-hardware)
+- [API Documentation](#api-documentation)
 - [Project Structure](#project-structure)
-- [Admin Panel](#admin-panel)
 - [Troubleshooting](#troubleshooting)
 
 ---
 
-## ✨ Features
+## 🎯 System Overview
 
-- **Fingerprint Enrollment**: Register user fingerprints using R307 sensor
-- **Automated Attendance**: Mark attendance by fingerprint scanning
-- **User Management**: Admin panel for managing users and profiles
-- **Excel Reports**: Export attendance data to Excel (.xlsx) format
-- **Audit Trail**: Track all scan attempts and attendance logs
-- **Manual Override**: Fallback manual attendance logging option
-- **Secure Authentication**: Django's built-in user authentication
-- **SQLite Database**: Easy-to-deploy, file-based database
+### Architecture
+```
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│   ESP32     │─────→│   Django     │─────→│  Firebase   │
+│  + R307     │ HTTP │   API        │ SDK  │  Firestore  │
+└─────────────┘      └──────────────┘      └─────────────┘
+                            ↕                      ↕
+                     ┌──────────────┐      ┌─────────────┐
+                     │   Frontend   │─────→│  Real-time  │
+                     │  (HTML/JS)   │ SDK  │   Updates   │
+                     └──────────────┘      └─────────────┘
+```
+
+### Technology Stack
+- **Backend:** Django 6.0 (API-only, no templates)
+- **Database:** Firebase Firestore (cloud, real-time)
+- **Hardware:** ESP32 + R307 Fingerprint Sensor
+- **Frontend:** HTML/CSS/JavaScript + Firebase SDK
+- **Real-time:** Firebase `onSnapshot()` listeners
 
 ---
 
-## 💻 System Requirements
+## ⚡ Quick Start
 
-### Software
-- **Python**: 3.10 or higher
-- **pip**: Python package manager
-- **Operating System**: macOS, Linux, or Windows
+### For Backend Developer:
+```bash
+# 1. Navigate to backend folder
+cd backend/
 
-### Hardware
-- **R307 Optical Fingerprint Sensor**
-- **USB-to-Serial Adapter** (if sensor doesn't have built-in USB)
-- **Computer** with available USB port
+# 2. Activate virtual environment (from project root)
+../.venv/Scripts/Activate.ps1  # Windows
+source ../.venv/bin/activate   # Linux/Mac
+
+# 3. Start Django server
+python manage.py runserver
+
+# Server runs at: http://127.0.0.1:8000
+```
+
+### For Frontend Developer:
+```bash
+# Work in the frontend/ folder
+cd frontend/
+
+# All your HTML, CSS, JS files go here
+# See "Frontend Development" section below
+```
 
 ---
 
-## 📦 Installation
+## 🔧 Backend Setup
 
-### Step 1: Clone or Download Project
+### System Requirements
+- Python 3.10+
+- pip package manager
+- Firebase account
 
+### Installation
+
+**1. Clone Repository**
 ```bash
-cd /path/to/project
+git clone https://github.com/Tkapesa/Fingerprint-attendance-system-.git
+cd Fingerprint-attendance-system-
 ```
 
-### Step 2: Create Virtual Environment (Recommended)
-
+**2. Create Virtual Environment**
 ```bash
-# Create virtual environment
-python -m venv venv
+python -m venv .venv
 
-# Activate virtual environment
-# macOS/Linux:
-source venv/bin/activate
-
-# Windows:
-venv\Scripts\activate
+# Activate
+.venv\Scripts\Activate.ps1  # Windows
+source .venv/bin/activate   # Linux/Mac
 ```
 
-### Step 3: Install Dependencies
-
+**3. Install Dependencies**
 ```bash
+cd backend/
 pip install -r requirements.txt
 ```
 
-**Dependencies installed:**
-- Django 5.2+ (Web framework)
-- pandas 2.2.3+ (Data processing)
-- openpyxl 3.1.5+ (Excel export)
-- pyserial 3.5+ (Sensor communication)
+**Dependencies:**
+- Django >= 5.2
+- firebase-admin >= 6.0.0
+- pandas >= 2.2.3
+- openpyxl >= 3.1.5
+- pyserial >= 3.5
 
-### Step 4: Database Setup
+**4. Configure Firebase**
+- Get `firebase-credentials.json` from Firebase Console
+- Place in `backend/` folder
+- See [Firebase Configuration](#firebase-configuration) section
 
+**5. Start Server**
 ```bash
-# Create database tables
-python manage.py makemigrations
-python manage.py migrate
-```
-
-### Step 5: Create Admin User
-
-```bash
-python manage.py createsuperuser
-```
-
-Follow prompts to create admin credentials:
-- Username: (your choice)
-- Email: (optional)
-- Password: (secure password)
-
-### Step 6: Run Development Server
-
-```bash
+cd backend/
 python manage.py runserver
 ```
 
-Access the application at: **http://127.0.0.1:8000**
+**Access:** http://127.0.0.1:8000
+
+**Test Firebase Connection:**
+```bash
+cd backend/
+python test_firebase_connection.py
+```
+
+### Backend API Endpoints
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/` | Home page | No |
+| POST | `/register/` | Student registration | No |
+| POST | `/login/` | User login | No |
+| GET | `/fingerprint/scan/` | Scan fingerprint | No |
+| POST | `/fingerprint/enroll-own/` | Enroll own fingerprint | Yes |
+| POST | `/fingerprint/enroll/` | Instructor enrolls student | Yes |
+| GET | `/attendance/dashboard/` | Instructor dashboard | Yes |
+| GET | `/attendance/course/<code>/` | Course attendance | Yes |
 
 ---
 
-## 🔌 Hardware Setup
+## 🎨 Frontend Development
 
-### R307 Sensor Connection
+### Setup
 
-1. **Connect Sensor to Computer**
-   - Plug R307 sensor into USB port (via USB-to-Serial adapter if needed)
+**Work in this folder:**
+```
+frontend/
+```
 
-2. **Find Serial Port**
+All your HTML, CSS, and JavaScript files go here.
 
-   **macOS/Linux:**
-   ```bash
-   ls /dev/tty.*
-   # Look for: /dev/tty.usbserial-XXXXX or /dev/ttyUSB0
-   ```
+### Firebase SDK Integration
 
-   **Windows:**
-   - Open Device Manager
-   - Look under "Ports (COM & LPT)"
-   - Note the COM port (e.g., COM3)
+**Add to your HTML:**
+```html
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-3. **Update Configuration**
-   
-   Edit `fingerprint/r307.py`:
-   ```python
-   SERIAL_PORT = '/dev/tty.usbserial-XXXXX'  # macOS/Linux
-   # OR
-   SERIAL_PORT = 'COM3'  # Windows
-   ```
+<script>
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCJoIAWWbPXB5EHEAcXj_epzRCElh1BCgU",
+  authDomain: "attendance-system-31683.firebaseapp.com",
+  projectId: "attendance-system-31683",
+  storageBucket: "attendance-system-31683.firebasestorage.app",
+  messagingSenderId: "859845763144",
+  appId: "1:859845763144:web:cfe51da2090756dbb4b87d"
+};
 
-4. **Test Connection**
-   - Try enrolling a fingerprint
-   - Check console for connection messages
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+```
+
+### Real-time Updates
+
+**Listen for new attendance:**
+```javascript
+db.collection('attendance')
+  .orderBy('timestamp', 'desc')
+  .limit(20)
+  .onSnapshot((snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === 'added') {
+        const data = change.doc.data();
+        console.log(`${data.student_name} marked present!`);
+        // Update your UI here
+      }
+    });
+  });
+```
+
+**Query students by course:**
+```javascript
+db.collection('students')
+  .where('course_code', '==', 'CS101')
+  .get()
+  .then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      const student = doc.data();
+      console.log(student.full_name);
+    });
+  });
+```
+
+### Export to Excel
+
+**Using SheetJS:**
+```html
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+```
+
+```javascript
+async function exportToExcel() {
+  const attendanceData = [];
+  
+  const snapshot = await db.collection('attendance')
+    .where('course_code', '==', 'CS101')
+    .get();
+  
+  snapshot.forEach(doc => {
+    const data = doc.data();
+    attendanceData.push({
+      'Student Name': data.student_name,
+      'Student ID': data.student_id,
+      'Date': data.date,
+      'Time': data.time
+    });
+  });
+  
+  const ws = XLSX.utils.json_to_sheet(attendanceData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Attendance');
+  XLSX.writeFile(wb, 'attendance_report.xlsx');
+}
+```
+
+### Call Django API
+
+**Example: Register student**
+```javascript
+fetch('http://127.0.0.1:8000/register/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    username: 'john_doe',
+    email: 'john@school.com',
+    password: 'secure123',
+    full_name: 'John Doe',
+    student_id: 'ST001',
+    course: 'CS101'
+  })
+})
+.then(response => response.json())
+.then(data => console.log('Success:', data));
+```
+
+### Recommended UI Libraries
+- **Bootstrap 5** - https://getbootstrap.com/
+- **Tailwind CSS** - https://tailwindcss.com/
+- **Chart.js** - https://www.chartjs.org/ (for graphs)
+- **Font Awesome** - https://fontawesome.com/ (icons)
+
+### Testing Your Frontend
+```bash
+# Option 1: Double-click HTML file
+# Option 2: VS Code Live Server extension
+# Option 3: Python HTTP server
+cd frontend
+python -m http.server 8080
+```
 
 ---
 
-## 🚀 Usage
+## 🔥 Firebase Configuration
 
-### For Administrators
+### Firestore Collections
 
-#### 1. Access Admin Panel
-- URL: http://127.0.0.1:8000/admin/
-- Login with superuser credentials
-- Manage users, profiles, attendance logs
+#### `students/{student_id}`
+```json
+{
+  "student_id": "ST001",
+  "full_name": "John Doe",
+  "email": "john@school.com",
+  "course_code": "CS101",
+  "fingerprint_id": 1,
+  "fingerprint_enrolled": true,
+  "role": "student",
+  "created_at": Timestamp
+}
+```
 
-#### 2. Create User Profiles
-- Go to Admin Panel → Users → Add User
-- Create username and password
-- Go to User Profiles → Add User Profile
-- Select user and set role (Admin/Student)
+#### `attendance/{attendance_id}`
+```json
+{
+  "student_id": "ST001",
+  "student_name": "John Doe",
+  "course_code": "CS101",
+  "date": "2025-12-20",
+  "time": "09:15:30",
+  "status": "present",
+  "scan_method": "fingerprint",
+  "timestamp": Timestamp
+}
+```
 
-#### 3. Enroll Fingerprints
-- URL: http://127.0.0.1:8000/fingerprint/enroll/
-- Enter username
-- Click "Start Enrollment"
-- User places finger on sensor
-- Wait for confirmation
+#### `courses/{course_code}`
+```json
+{
+  "course_code": "CS101",
+  "course_name": "Introduction to Programming",
+  "instructor_name": "Prof. Smith",
+  "created_at": Timestamp
+}
+```
 
-#### 4. Generate Reports
-- URL: http://127.0.0.1:8000/reports/generate/
-- Excel file downloads automatically
-- Contains all attendance records
+#### `fingerprint_mapping/{fingerprint_id}`
+```json
+{
+  "fingerprint_id": 1,
+  "student_id": "ST001",
+  "enrolled_at": Timestamp
+}
+```
 
-### For Students/Users
+### Initialize Firebase Collections
 
-#### 1. Mark Attendance
-- URL: http://127.0.0.1:8000/fingerprint/scan/
-- Click "Scan Now"
-- Place enrolled finger on sensor
-- Attendance marked automatically
+```bash
+python initialize_firebase.py
+```
 
-#### 2. Manual Attendance (Fallback)
-- URL: http://127.0.0.1:8000/attendance/log/
-- Use when sensor is unavailable
-- Requires login
+This creates:
+- `courses/` collection with sample courses
+- `system/` collection with configuration
+- Required indexes
+
+### Firebase Console
+https://console.firebase.google.com/project/attendance-system-31683
+
+---
+
+## 🤖 ESP32 Hardware
+
+### Components
+- ESP32 DevKit
+- R307 Fingerprint Sensor
+- Wires
+
+### Wiring
+```
+ESP32          R307 Sensor
+─────          ────────────
+GPIO 16    →   TX (Yellow)
+GPIO 17    →   RX (White)
+3.3V       →   VCC (Red)
+GND        →   GND (Black)
+```
+
+### Arduino Setup
+
+**1. Install Libraries:**
+- WiFi (built-in)
+- HTTPClient (built-in)
+- Adafruit Fingerprint Sensor
+- ArduinoJson
+
+**2. Configure WiFi:**
+Edit `esp32_attendance_system.ino`:
+```cpp
+#define WIFI_SSID     "YourWiFiName"
+#define WIFI_PASSWORD "YourPassword"
+#define BACKEND_BASE_URL "http://10.73.3.136:8000"
+```
+
+**3. Upload Sketch:**
+- Open `esp32_attendance_system.ino` in Arduino IDE
+- Select board: ESP32 Dev Module
+- Select correct COM port
+- Click Upload
+
+**4. Monitor Serial:**
+- Open Serial Monitor (9600 baud)
+- Check connection status
+- View attendance logs
+
+### ESP32 Workflow
+
+**Enrollment:**
+1. Backend triggers enrollment mode
+2. ESP32 captures fingerprint (2 scans)
+3. Stores template in R307 memory
+4. Sends fingerprint_id to backend
+5. Backend maps ID to student in Firebase
+
+**Attendance:**
+1. Student places finger on R307
+2. ESP32 scans and matches fingerprint
+3. Sends fingerprint_id to Django API
+4. Django queries Firebase for student
+5. Creates attendance record in Firebase
+6. Frontend displays update in real-time
 
 ---
 
 ## 📁 Project Structure
 
 ```
-fingerprint_attendance/          # Main Django project
-├── settings.py                  # Project configuration
-├── urls.py                      # Main URL routing
-└── views.py                     # Home page view
-
-users/                           # User management app
-├── models.py                    # UserProfile model
-└── admin.py                     # Admin configuration
-
-fingerprint/                     # Fingerprint functionality
-├── models.py                    # FingerprintScan model
-├── views.py                     # Enroll/scan views
-├── urls.py                      # Fingerprint URLs
-├── r307.py                      # Sensor interface
-└── templates/fingerprint/
-    ├── enroll.html             # Enrollment page
-    └── scan.html               # Scanning page
-
-attendance/                      # Attendance tracking
-├── models.py                    # AttendanceLog model
-├── views.py                     # Logging views
-└── urls.py                      # Attendance URLs
-
-reports/                         # Report generation
-├── views.py                     # Excel export view
-└── urls.py                      # Report URLs
-
-templates/                       # Global templates
-└── home.html                    # Main dashboard
-
-db.sqlite3                       # SQLite database
-manage.py                        # Django management script
-requirements.txt                 # Python dependencies
+Fingerprint-attendance-system/
+│
+├── � backend/                      # Backend Django API
+│   ├── fingerprint_attendance/      # Main Django project
+│   │   ├── settings.py              # Config + Firebase settings
+│   │   ├── urls.py                  # Main routing
+│   │   └── views.py                 # Home view
+│   │
+│   ├── users/                       # User management API
+│   │   ├── models.py                # (Empty - using Firebase)
+│   │   ├── views.py                 # Login, register
+│   │   └── urls.py
+│   │
+│   ├── fingerprint/                 # Fingerprint operations
+│   │   ├── models.py                # (Empty - using Firebase)
+│   │   ├── views.py                 # Enroll, scan APIs
+│   │   ├── urls.py
+│   │   └── r307.py                  # R307 sensor driver
+│   │
+│   ├── attendance/                  # Attendance management
+│   │   ├── models.py                # (Empty - using Firebase)
+│   │   ├── views.py                 # Dashboard, reports
+│   │   └── urls.py
+│   │
+│   ├── manage.py                    # Django management
+│   ├── requirements.txt             # Python dependencies
+│   ├── firebase-credentials.json    # Service account key
+│   ├── initialize_firebase.py       # Setup Firestore
+│   ├── add_student_firebase.py      # Add students
+│   └── test_firebase_connection.py  # Test connection
+│
+├── 📁 frontend/                     # Frontend development
+│   ├── realtime_dashboard.html      # Real-time attendance
+│   └── (Add your HTML/CSS/JS here)
+│
+├── 📁 esp32_fingerprint/            # Hardware code
+│   └── esp32_attendance_system.ino  # Arduino sketch
+│
+├── 📚 Documentation
+│   ├── README.md                    # This file
+│   ├── FIREBASE_SETUP_GUIDE.txt
+│   ├── ESP32_QUICK_GUIDE.txt
+│   └── TESTING_GUIDE.md
+│
+└── .venv/                           # Virtual environment
 ```
-
----
-
-## 👤 Admin Panel
-
-### Access
-URL: http://127.0.0.1:8000/admin/
-
-### Available Sections
-
-1. **Users**
-   - Manage usernames, passwords, permissions
-   - Built-in Django users
-
-2. **User Profiles**
-   - Link users to roles (Admin/Student)
-   - View enrolled fingerprints
-
-3. **Attendance Logs**
-   - View all attendance records
-   - Filter by date, status, user
-   - Search by username
-
-4. **Fingerprint Scans**
-   - Audit trail of all scan attempts
-   - Debug sensor issues
 
 ---
 
 ## 🔧 Troubleshooting
 
-### Sensor Connection Issues
+### Backend Issues
 
-**Problem**: "Error connecting to R307"
-
-**Solutions**:
-1. Check USB connection
-2. Verify correct serial port in `r307.py`
-3. Install pyserial: `pip install pyserial`
-4. Check permissions (Linux/macOS):
-   ```bash
-   sudo chmod 666 /dev/ttyUSB0
-   ```
-
-### Fingerprint Not Recognized
-
-**Solutions**:
-1. Clean sensor surface
-2. Ensure finger is properly placed
-3. Re-enroll fingerprint
-4. Check sensor LED indicators
-
-### Database Errors
-
-**Problem**: "no such table"
-
-**Solution**:
+**Port Already in Use:**
 ```bash
-python manage.py makemigrations
-python manage.py migrate
+# Kill process on port 8000
+# Windows:
+netstat -ano | findstr :8000
+taskkill /PID <PID> /F
+
+# Linux/Mac:
+lsof -ti:8000 | xargs kill
 ```
 
-### Import Errors
-
-**Problem**: "ModuleNotFoundError"
-
-**Solution**:
+**Firebase Connection Error:**
 ```bash
+# Test connection
+cd backend/
+python test_firebase_connection.py
+
+# Check credentials file exists
+ls firebase-credentials.json
+```
+
+**Module Not Found:**
+```bash
+cd backend/
 pip install -r requirements.txt
 ```
 
-### Admin Panel Not Accessible
+### Frontend Issues
 
-**Problem**: 404 or permission denied
-
-**Solution**:
-```bash
-# Create superuser
-python manage.py createsuperuser
+**CORS Error:**
+Add to Django `settings.py`:
+```python
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
 ```
+
+**Firebase Permission Denied:**
+- Check Firebase Console → Firestore → Rules
+- Set rules to allow read/write (development only)
+
+### ESP32 Issues
+
+**WiFi Not Connecting:**
+- Check SSID and password
+- Ensure 2.4GHz network (ESP32 doesn't support 5GHz)
+- Check serial monitor for error messages
+
+**Sensor Not Detected:**
+- Check wiring (TX/RX correct)
+- Verify 3.3V power (not 5V)
+- Test sensor with separate Arduino sketch
+
+**Can't Upload Code:**
+- Hold BOOT button while uploading
+- Select correct COM port
+- Install CH340 drivers (if needed)
 
 ---
 
-## 📊 Database Models
+## 📊 Database Schema (Firebase)
 
-### UserProfile
-- Links Django User to fingerprint template
-- Stores role (Admin/Student)
-- One profile per user
+### students/ Collection
+- **Document ID:** student_id (e.g., "ST001")
+- **Fields:** full_name, email, course_code, fingerprint_id, fingerprint_enrolled, role, created_at, updated_at
 
-### FingerprintScan
-- Audit trail of scan attempts
-- Stores scan timestamp
-- Links to user
+### attendance/ Collection
+- **Document ID:** Auto-generated
+- **Fields:** attendance_id, student_id, student_name, course_code, date, time, status, scan_method, timestamp, fingerprint_id
 
-### AttendanceLog
-- Main attendance records
-- Status: Present/Absent
-- Auto-timestamps
-- Tracks retry attempts
+### courses/ Collection
+- **Document ID:** course_code (e.g., "CS101")
+- **Fields:** course_name, instructor_id, instructor_name, description, created_at
+
+### fingerprint_mapping/ Collection
+- **Document ID:** fingerprint_id (e.g., "1")
+- **Fields:** student_id, enrolled_at, sensor_template_data (optional)
 
 ---
 
 ## 🔒 Security Notes
 
-**For Production Deployment:**
+### Development
+- ✅ Firebase API key in frontend is safe (public by design)
+- ✅ Firebase rules control data access
+- ✅ Django API requires authentication for sensitive endpoints
 
-1. Change `SECRET_KEY` in `settings.py`
-2. Set `DEBUG = False`
-3. Add domain to `ALLOWED_HOSTS`
-4. Use PostgreSQL/MySQL instead of SQLite
-5. Enable HTTPS
-6. Set up proper user permissions
-7. Regular database backups
+### Production Checklist
+- [ ] Set Django `DEBUG = False`
+- [ ] Change `SECRET_KEY` in settings.py
+- [ ] Configure Firebase security rules
+- [ ] Enable HTTPS
+- [ ] Set up proper authentication
+- [ ] Regular database backups
+- [ ] Monitor Firebase usage/costs
+- [ ] Implement rate limiting
+- [ ] Use environment variables for secrets
 
 ---
 
-## 📝 Configuration
+## 📞 Support & Resources
 
-### Time Zone
+### Documentation
+- **Django:** https://docs.djangoproject.com/
+- **Firebase:** https://firebase.google.com/docs/firestore
+- **ESP32:** https://docs.espressif.com/
+- **R307 Sensor:** Check `ESP32_QUICK_GUIDE.txt`
 
-Edit `settings.py`:
-```python
-TIME_ZONE = 'UTC'  # Change to your timezone
-# Examples: 'America/New_York', 'Asia/Kolkata', 'Europe/London'
+### Testing
+```bash
+# Test backend
+python manage.py runserver
+
+# Test Firebase
+python test_firebase_connection.py
+
+# Test ESP32
+# Open Serial Monitor in Arduino IDE
 ```
 
-### Serial Port
-
-Edit `fingerprint/r307.py`:
-```python
-SERIAL_PORT = '/dev/tty.usbserial-XXXXX'  # Update this
-```
+### GitHub Repository
+https://github.com/Tkapesa/Fingerprint-attendance-system-.git
 
 ---
 
-## 📞 Support
-
-For issues or questions:
-1. Check this README
-2. Review console error messages
-3. Verify sensor connections
-4. Check Django documentation: https://docs.djangoproject.com
-
----
-
-## 📄 License
+## 📝 License
 
 [Your License Here]
+
+---
+
+## 🎯 Quick Reference
+
+### Start Backend
+```bash
+cd backend/
+.venv\Scripts\Activate.ps1  # Windows (from project root)
+python manage.py runserver
+```
+
+### Start Frontend Development
+```bash
+cd frontend/
+# Open HTML in browser or use Live Server
+```
+
+### ESP32 Upload
+1. Open Arduino IDE
+2. Load `esp32_fingerprint/esp32_attendance_system.ino`
+3. Configure WiFi credentials
+4. Upload to ESP32
+
+### Common Commands
+```bash
+# Initialize Firebase
+cd backend/
+python initialize_firebase.py
+
+# Add student to Firebase
+cd backend/
+python add_student_firebase.py
+
+# Test Firebase connection
+cd backend/
+python test_firebase_connection.py
+```
+
+---
+
+**Last Updated:** December 20, 2025  
+**Backend Status:** 🟢 Running  
+**Frontend Status:** 🎨 Ready for Development  
+**Firebase Status:** 🟢 Connected
 
 ---
 

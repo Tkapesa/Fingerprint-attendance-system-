@@ -39,9 +39,6 @@ urlpatterns = [
     
     # Attendance module - instructor dashboard and viewing
     path('attendance/', include('attendance.urls')),
-    
-    # Reports module - generate and download reports
-    path('reports/', include('reports.urls')),
 ]
 
 

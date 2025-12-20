@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'users',        # User profile management
     'fingerprint',  # Fingerprint enrollment and scanning
     'attendance',   # Attendance logging
-    'reports',      # Report generation (Excel exports)
 ]
 
 
