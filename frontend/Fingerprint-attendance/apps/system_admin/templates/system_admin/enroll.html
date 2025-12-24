@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enroll Fingerprints - System Admin</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f8f9fa;
+        color: #333;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+        color: white;
+        padding: 25px 40px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .header h1 {
+        font-size: 1.8em;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 15px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+      }
+
+      .btn-back {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+      }
+
+      .btn-back:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* Main Content */
+      .container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      @media (max-width: 1024px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Enrollment Card */
+      .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .card-header {
+        background: #ff9800;
+        color: white;
+        padding: 25px 30px;
+      }
+
+      .card-header h2 {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 1.5em;
+      }
+
+      .card-body {
+        padding: 30px;
+      }
+
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 25px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        color: #333;
+        font-weight: 500;
+        font-size: 1.1em;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border 0.3s;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: #ff9800;
+      }
+
+      .search-results {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+
+      .student-item {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .student-item:hover {
+        background: #f8f9fa;
+      }
+
+      .student-item.selected {
+        background: #fff3e0;
+        border-left: 4px solid #ff9800;
+      }
+
+      .student-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #ff9800;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+
+      .student-info h4 {
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .student-info p {
+        color: #666;
+        font-size: 0.9em;
+      }
+
+      /* Device Connection */
+      .device-status {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .status-online {
+        background: #4caf50;
+        box-shadow: 0 0 10px #4caf50;
+      }
+      .status-offline {
+        background: #f44336;
+        box-shadow: 0 0 10px #f44336;
+      }
+
+      /* Enrollment Steps */
+      .enrollment-steps {
+        margin: 30px 0;
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        background: #f8f9fa;
+      }
+
+      .step-number {
+        width: 40px;
+        height: 40px;
+        background: #ff9800;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      .step-content h4 {
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .step-content p {
+        color: #666;
+        font-size: 0.9em;
+      }
+
+      /* Live Preview */
+      .preview-card {
+        height: 100%;
+      }
+
+      .preview-header {
+        background: #2196f3;
+      }
+
+      .preview-content {
+        padding: 30px;
+        height: calc(100% - 90px);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .preview-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 40px;
+        margin-bottom: 30px;
+      }
+
+      .fingerprint-scanner {
+        width: 200px;
+        height: 200px;
+        background: white;
+        border-radius: 50%;
+        border: 4px dashed #2196f3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 30px;
+        position: relative;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 20px rgba(33, 150, 243, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+        }
+      }
+
+      .fingerprint-icon {
+        font-size: 4em;
+        color: #2196f3;
+      }
+
+      .scanning-text {
+        color: #666;
+        font-size: 1.2em;
+        margin-bottom: 10px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 10px;
+        background: #e0e0e0;
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 20px 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: #4caf50;
+        width: 0%;
+        transition: width 0.5s;
+      }
+
+      /* Action Buttons */
+      .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .btn-enroll {
+        background: #4caf50;
+        color: white;
+        flex: 1;
+      }
+
+      .btn-enroll:hover {
+        background: #45a049;
+      }
+
+      .btn-cancel {
+        background: #f44336;
+        color: white;
+      }
+
+      .btn-cancel:hover {
+        background: #d32f2f;
+      }
+
+      .btn-refresh {
+        background: #2196f3;
+        color: white;
+      }
+
+      .btn-refresh:hover {
+        background: #1976d2;
+      }
+
+      /* Messages */
+      .messages {
+        margin-bottom: 25px;
+      }
+
+      .alert {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .alert-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      /* Recent Enrollments */
+      .recent-enrollments {
+        margin-top: 30px;
+      }
+
+      .enrollment-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .enrollment-status {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: bold;
+      }
+
+      .status-success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status-pending {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status-failed {
+        background: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1>👆 Fingerprint Enrollment System</h1>
+        <div class="header-actions">
+          <a
+            href="{% url 'system_admin:admin_dashboard' %}"
+            class="btn btn-back"
+          >
+            ← Back to Dashboard
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+      <!-- Left Column: Enrollment Form -->
+      <div class="card">
+        <div class="card-header">
+          <h2>📝 Student Selection</h2>
+        </div>
+        <div class="card-body">
+          {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <!-- Device Status -->
+          <div class="device-status">
+            <div class="status-indicator status-online"></div>
+            <div>
+              <h4 style="margin: 0">ESP Fingerprint Scanner</h4>
+              <p style="margin: 5px 0 0; color: #666">
+                Connected via USB • Device ID: ESP32-R307
+              </p>
+            </div>
+          </div>
+
+          <!-- Search Student -->
+          <div class="form-group">
+            <label for="searchStudent">Search Student</label>
+            <input
+              type="text"
+              id="searchStudent"
+              class="form-control"
+              placeholder="Enter student name or ID..."
+            />
+
+            <div class="search-results" id="studentResults">
+              {% for student in students %}
+              <div class="student-item" data-student-id="{{ student.id }}">
+                <div class="student-avatar">
+                  {{ student.name|slice:":1"|upper }}
+                </div>
+                <div class="student-info">
+                  <h4>{{ student.name }}</h4>
+                  <p>ID: {{ student.id }} • Course: {{ student.course }}</p>
+                  <p>
+                    <small>
+                      {% if student.fingerprint_enrolled %}
+                      <span style="color: #4caf50"
+                        >✅ Fingerprint enrolled</span
+                      >
+                      {% else %}
+                      <span style="color: #f44336">❌ No fingerprint</span>
+                      {% endif %}
+                    </small>
+                  </p>
+                </div>
+              </div>
+              {% empty %}
+              <div style="padding: 30px; text-align: center; color: #666">
+                <p>No students found</p>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Selected Student Info -->
+          <div
+            class="form-group"
+            id="selectedStudentSection"
+            style="display: none"
+          >
+            <label>Selected Student</label>
+            <div
+              id="selectedStudentInfo"
+              style="background: #fff3e0; padding: 20px; border-radius: 8px"
+            >
+              <!-- Dynamic content will be inserted here -->
+            </div>
+          </div>
+
+          <!-- Enrollment Steps -->
+          <div class="enrollment-steps">
+            <h3 style="margin-bottom: 20px; color: #333">
+              📋 Enrollment Process
+            </h3>
+
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Select Student</h4>
+                <p>Choose a student from the list above</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Prepare Fingerprint Scanner</h4>
+                <p>Ensure ESP device is connected and ready</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Scan Fingerprint</h4>
+                <p>Student places finger on scanner 3 times</p>
+              </div>
+            </div>
+
+            <div class="step">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h4>Save & Verify</h4>
+                <p>System saves fingerprint template and verifies</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button id="startEnrollmentBtn" class="btn btn-enroll" disabled>
+              🚀 Start Fingerprint Enrollment
+            </button>
+            <button id="refreshBtn" class="btn btn-refresh">
+              🔄 Refresh Device
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Live Preview -->
+      <div class="card preview-card">
+        <div class="card-header preview-header">
+          <h2>👁️ Live Enrollment Preview</h2>
+        </div>
+        <div class="card-body preview-content">
+          <div class="preview-area">
+            <div class="fingerprint-scanner">
+              <div class="fingerprint-icon">👆</div>
+            </div>
+
+            <div class="scanning-text" id="scanStatus">
+              Ready for enrollment
+            </div>
+
+            <div class="progress-bar">
+              <div class="progress-fill" id="enrollmentProgress"></div>
+            </div>
+
+            <div id="stepInstructions" style="text-align: center; color: #666">
+              Select a student to begin fingerprint enrollment
+            </div>
+          </div>
+
+          <!-- Enrollment Details -->
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px">
+            <h4 style="margin-bottom: 15px; color: #333">
+              📊 Enrollment Details
+            </h4>
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px"
+            >
+              <div>
+                <label style="color: #666; font-size: 0.9em"
+                  >Selected Student</label
+                >
+                <div id="previewStudentName" style="font-weight: bold">
+                  -- None --
+                </div>
+              </div>
+              <div>
+                <label style="color: #666; font-size: 0.9em">Student ID</label>
+                <div id="previewStudentId" style="font-weight: bold">--</div>
+              </div>
+              <div>
+                <label style="color: #666; font-size: 0.9em"
+                  >Enrollment Status</label
+                >
+                <div id="previewStatus" style="font-weight: bold; color: #666">
+                  Waiting
+                </div>
+              </div>
+              <div>
+                <label style="color: #666; font-size: 0.9em"
+                  >Scan Progress</label
+                >
+                <div id="previewProgress" style="font-weight: bold">
+                  0/3 scans
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Enrollments -->
+          <div class="recent-enrollments">
+            <h4 style="margin-bottom: 15px; color: #333">
+              🕐 Recent Enrollments
+            </h4>
+            {% for enrollment in recent_enrollments %}
+            <div class="enrollment-item">
+              <div style="flex: 1">
+                <strong>{{ enrollment.student_name }}</strong>
+                <div style="font-size: 0.9em; color: #666">
+                  {{ enrollment.student_id }}
+                </div>
+              </div>
+              <div class="enrollment-status status-{{ enrollment.status }}">
+                {{ enrollment.status|title }}
+              </div>
+              <div style="color: #999; font-size: 0.9em">
+                {{ enrollment.time }}
+              </div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 20px; color: #666">
+              No recent enrollments
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Student selection
+      const studentItems = document.querySelectorAll(".student-item");
+      let selectedStudent = null;
+
+      studentItems.forEach((item) => {
+        item.addEventListener("click", function () {
+          // Remove previous selection
+          studentItems.forEach((i) => i.classList.remove("selected"));
+
+          // Add selection to clicked item
+          this.classList.add("selected");
+          selectedStudent = this.dataset.studentId;
+
+          // Show selected student section
+          const selectedSection = document.getElementById(
+            "selectedStudentSection"
+          );
+          const selectedInfo = document.getElementById("selectedStudentInfo");
+          const studentName = this.querySelector("h4").textContent;
+          const studentId =
+            this.querySelector("p").textContent.match(/ID: (\w+)/)[1];
+          const studentCourse =
+            this.querySelector("p").textContent.match(/Course: (.+)/)[1];
+
+          selectedInfo.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="font-size: 2em;">👤</div>
+                        <div>
+                            <h3 style="margin: 0 0 5px;">${studentName}</h3>
+                            <p style="margin: 0 0 5px; color: #666;">Student ID: ${studentId}</p>
+                            <p style="margin: 0; color: #666;">Course: ${studentCourse}</p>
+                        </div>
+                    </div>
+                `;
+
+          selectedSection.style.display = "block";
+
+          // Update preview
+          document.getElementById("previewStudentName").textContent =
+            studentName;
+          document.getElementById("previewStudentId").textContent = studentId;
+          document.getElementById("scanStatus").textContent =
+            "Ready to enroll fingerprint";
+          document.getElementById("stepInstructions").textContent =
+            'Click "Start Enrollment" to begin';
+
+          // Enable enrollment button
+          document.getElementById("startEnrollmentBtn").disabled = false;
+        });
+      });
+
+      // Search functionality
+      document
+        .getElementById("searchStudent")
+        .addEventListener("input", function () {
+          const searchTerm = this.value.toLowerCase();
+          studentItems.forEach((item) => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(searchTerm) ? "flex" : "none";
+          });
+        });
+
+      // Enrollment simulation
+      document
+        .getElementById("startEnrollmentBtn")
+        .addEventListener("click", function () {
+          if (!selectedStudent) return;
+
+          const btn = this;
+          const originalText = btn.innerHTML;
+          btn.innerHTML = "⏳ Enrolling...";
+          btn.disabled = true;
+
+          // Update preview
+          document.getElementById("previewStatus").textContent = "In Progress";
+          document.getElementById("previewStatus").style.color = "#FF9800";
+
+          // Simulate enrollment process
+          let scanCount = 0;
+          const totalScans = 3;
+
+          const enrollmentInterval = setInterval(() => {
+            scanCount++;
+            const progress = (scanCount / totalScans) * 100;
+
+            // Update progress
+            document.getElementById(
+              "enrollmentProgress"
+            ).style.width = `${progress}%`;
+            document.getElementById(
+              "previewProgress"
+            ).textContent = `${scanCount}/${totalScans} scans`;
+            document.getElementById(
+              "scanStatus"
+            ).textContent = `Scan ${scanCount} of ${totalScans}...`;
+
+            // Animate fingerprint scanner
+            const scanner = document.querySelector(".fingerprint-scanner");
+            scanner.style.borderColor =
+              scanCount === totalScans ? "#4CAF50" : "#FF9800";
+            scanner.style.animation =
+              scanCount === totalScans ? "none" : "pulse 2s infinite";
+
+            if (scanCount === totalScans) {
+              clearInterval(enrollmentInterval);
+
+              // Show success
+              setTimeout(() => {
+                document.getElementById("previewStatus").textContent =
+                  "Completed";
+                document.getElementById("previewStatus").style.color =
+                  "#4CAF50";
+                document.getElementById("scanStatus").textContent =
+                  "✅ Enrollment successful!";
+                document.getElementById("stepInstructions").textContent =
+                  "Fingerprint saved to database";
+
+                // Reset button
+                btn.innerHTML = "✅ Enrollment Complete";
+
+                // Show success message
+                const messagesDiv =
+                  document.querySelector(".messages") ||
+                  document.createElement("div");
+                if (!document.querySelector(".messages")) {
+                  messagesDiv.className = "messages";
+                  document.querySelector(".card-body").prepend(messagesDiv);
+                }
+
+                messagesDiv.innerHTML = `
+                            <div class="alert alert-success">
+                                ✅ Fingerprint enrolled successfully for ${
+                                  document.getElementById("previewStudentName")
+                                    .textContent
+                                }
+                            </div>
+                        `;
+
+                // Scroll to top to show message
+                messagesDiv.scrollIntoView({ behavior: "smooth" });
+              }, 500);
+            }
+          }, 1000);
+        });
+
+      // Refresh device
+      document
+        .getElementById("refreshBtn")
+        .addEventListener("click", function () {
+          const btn = this;
+          const originalText = btn.innerHTML;
+          btn.innerHTML = "🔄 Connecting...";
+          btn.disabled = true;
+
+          setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+
+            // Show success message
+            const messagesDiv =
+              document.querySelector(".messages") ||
+              document.createElement("div");
+            if (!document.querySelector(".messages")) {
+              messagesDiv.className = "messages";
+              document.querySelector(".card-body").prepend(messagesDiv);
+            }
+
+            messagesDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        🔄 Device refreshed successfully
+                    </div>
+                `;
+          }, 1500);
+        });
+
+      // Initialize with sample data if empty
+      if (studentItems.length === 0) {
+        const resultsDiv = document.getElementById("studentResults");
+        const sampleStudents = [
+          { id: "ST001", name: "John Smith", course: "Computer Science" },
+          {
+            id: "ST002",
+            name: "Emma Johnson",
+            course: "Electrical Engineering",
+          },
+          {
+            id: "ST003",
+            name: "Michael Brown",
+            course: "Mechanical Engineering",
+          },
+          { id: "ST004", name: "Sarah Davis", course: "Computer Science" },
+          { id: "ST005", name: "Robert Wilson", course: "Civil Engineering" },
+        ];
+
+        sampleStudents.forEach((student) => {
+          const item = document.createElement("div");
+          item.className = "student-item";
+          item.dataset.studentId = student.id;
+          item.innerHTML = `
+                    <div class="student-avatar">${student.name.charAt(0)}</div>
+                    <div class="student-info">
+                        <h4>${student.name}</h4>
+                        <p>ID: ${student.id} • Course: ${student.course}</p>
+                        <p><small><span style="color: #f44336;">❌ No fingerprint</span></small></p>
+                    </div>
+                `;
+          resultsDiv.appendChild(item);
+        });
+
+        // Reattach event listeners
+        document.querySelectorAll(".student-item").forEach((item) => {
+          item.addEventListener("click", function () {
+            document
+              .querySelectorAll(".student-item")
+              .forEach((i) => i.classList.remove("selected"));
+            this.classList.add("selected");
+
+            const selectedSection = document.getElementById(
+              "selectedStudentSection"
+            );
+            const selectedInfo = document.getElementById("selectedStudentInfo");
+            const studentName = this.querySelector("h4").textContent;
+            const studentId =
+              this.querySelector("p").textContent.match(/ID: (\w+)/)[1];
+            const studentCourse =
+              this.querySelector("p").textContent.match(/Course: (.+)/)[1];
+
+            selectedInfo.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="font-size: 2em;">👤</div>
+                            <div>
+                                <h3 style="margin: 0 0 5px;">${studentName}</h3>
+                                <p style="margin: 0 0 5px; color: #666;">Student ID: ${studentId}</p>
+                                <p style="margin: 0; color: #666;">Course: ${studentCourse}</p>
+                            </div>
+                        </div>
+                    `;
+
+            selectedSection.style.display = "block";
+            document.getElementById("startEnrollmentBtn").disabled = false;
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

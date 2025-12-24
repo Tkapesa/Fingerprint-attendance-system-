@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Manage Students</title>
+    <style>
+      body {
+        font-family: Arial;
+        margin: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .back-link {
+        margin-bottom: 20px;
+      }
+      .course-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background: #f5f5f5;
+      }
+      .add-btn {
+        background: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="back-link">
+        <a href="{% url 'teacher:teacher_dashboard' %}">← Back to Dashboard</a>
+      </div>
+
+      <h1>Manage Students</h1>
+
+      {% for course in courses %}
+      <div class="course-card">
+        <h2>{{ course.code }} - {{ course.name }}</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in course.students %}
+            <tr>
+              <td>{{ student.id }}</td>
+              <td>{{ student.name }}</td>
+              <td>{{ student.email }}</td>
+              <td>
+                <a href="#" style="color: #2196f3; margin-right: 10px">Edit</a>
+                <a href="#" style="color: #f44336">Remove</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" style="text-align: center">
+                No students in this course
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div style="margin-top: 15px">
+          <a href="#" class="add-btn">+ Add Student to {{ course.code }}</a>
+        </div>
+      </div>
+      {% empty %}
+      <div style="text-align: center; padding: 40px; color: #666">
+        <p>No courses available</p>
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>

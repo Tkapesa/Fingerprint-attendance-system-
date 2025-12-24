@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fingerprint Attendance System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .container {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        max-width: 1000px;
+        width: 100%;
+        text-align: center;
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
+      .subtitle {
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 1.1em;
+      }
+      .role-cards {
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+      }
+      .card {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        width: 280px;
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      }
+      .card-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+      }
+      .card h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.5em;
+      }
+      .card p {
+        color: #666;
+        margin-bottom: 25px;
+        line-height: 1.5;
+      }
+      .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+      .btn:hover {
+        background: #5a67d8;
+      }
+      .btn-student {
+        background: #4caf50;
+      }
+      .btn-student:hover {
+        background: #45a049;
+      }
+      .btn-teacher {
+        background: #2196f3;
+      }
+      .btn-teacher:hover {
+        background: #1976d2;
+      }
+      .btn-admin {
+        background: #ff9800;
+      }
+      .btn-admin:hover {
+        background: #f57c00;
+      }
+      .messages {
+        margin-bottom: 20px;
+      }
+      .alert {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔐 Fingerprint Attendance System</h1>
+      <p class="subtitle">
+        Secure, automated attendance tracking with fingerprint authentication
+      </p>
+
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div class="role-cards">
+        <!-- Student Card -->
+        <div class="card">
+          <div class="card-icon">🎓</div>
+          <h3>Student Login</h3>
+          <p>
+            Mark your attendance using fingerprint scanner. View your attendance
+            history and course information.
+          </p>
+          <a href="{% url 'login_student' %}" class="btn btn-student">
+            Login as Student
+          </a>
+        </div>
+
+        <!-- Teacher Card -->
+        <div class="card">
+          <div class="card-icon">👨‍🏫</div>
+          <h3>Teacher Login</h3>
+          <p>
+            Create attendance sessions, view student attendance reports, and
+            manage your courses.
+          </p>
+          <a href="{% url 'login_teacher' %}" class="btn btn-teacher">
+            Login as Teacher
+          </a>
+        </div>
+
+        <!-- Admin Card -->
+        <div class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>Administrator</h3>
+          <p>
+            Manage system settings, enroll student fingerprints, and oversee all
+            attendance records.
+          </p>
+          <a href="{% url 'login_admin' %}" class="btn btn-admin">
+            Login as Admin
+          </a>
+        </div>
+      </div>
+
+      <div style="margin-top: 40px; color: #666; font-size: 0.9em">
+        <p>Select your role to continue to the login page</p>
+        <p style="margin-top: 10px">Need help? Contact system administrator</p>
+      </div>
+    </div>
+  </body>
+</html>
